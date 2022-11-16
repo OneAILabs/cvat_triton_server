@@ -1,0 +1,32 @@
+model_warmup {
+  inputs [
+    {
+        key: "input_anchors"
+        value: {
+          data_type: TYPE_FP32
+          dims: 261888
+          dims: 4
+          random_data: true
+        }
+    },
+    {
+        key: "input_image"
+        value: {
+          data_type: TYPE_FP32
+          dims: 1024
+          dims: 1024
+          dims: 3
+          random_data: true
+        }
+    },
+    {
+        key: "input_image_meta"
+        value: {
+          data_type: TYPE_FP32
+          dims: 93
+          random_data: true
+        }
+    }
+  ]
+  batch_size: 1
+}

@@ -1,0 +1,27 @@
+model_warmup {
+  inputs [
+    {
+        key: "INPUT__0"
+        value: {
+          data_type: TYPE_FP32
+          dims: 1
+          dims: 256
+          dims: 7
+          dims: 7
+          random_data: true
+        }
+    },
+    {
+        key: "INPUT__1"
+        value: {
+          data_type: TYPE_FP32
+          dims: 1
+          dims: 256
+          dims: 31
+          dims: 31
+          random_data: true
+        }
+    }
+  ]
+  batch_size: 1
+}

@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="3.708" timestamp="2021-09-01T08:03:57.317138" hostname="e65e8ddcb0aa"><testcase classname="tests.test_fbrs_hrnet" name="test_fbrs" time="1.511" /></testsuite></testsuites>

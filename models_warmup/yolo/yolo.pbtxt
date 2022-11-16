@@ -1,0 +1,16 @@
+model_warmup {
+  inputs [
+    {
+        key: "000_net"
+        value: {
+          data_type: TYPE_FP32
+          dims: 1
+          dims: 3
+          dims: H
+          dims: W
+          random_data: true
+        }
+    }
+  ]
+  batch_size: 1
+}

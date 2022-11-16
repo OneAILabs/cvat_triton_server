@@ -1,0 +1,57 @@
+model_warmup {
+  inputs [
+    {
+        key: "INPUT__0"
+        value: {
+          data_type: TYPE_FP32
+          dims: 1
+          dims: 64
+          dims: 125
+          dims: 125
+          zero_data: true
+        }
+    },
+    {
+        key: "INPUT__1"
+        value: {
+          data_type: TYPE_FP32
+          dims: 1
+          dims: 256
+          dims: 63
+          dims: 63
+          zero_data: true
+        }
+    },
+    {
+        key: "INPUT__2"
+        value: {
+          data_type: TYPE_FP32
+          dims: 1
+          dims: 512
+          dims: 31
+          dims: 31
+          zero_data: true
+        }
+    },
+    {
+        key: "INPUT__3"
+        value: {
+          data_type: TYPE_FP32
+          dims: 1
+          dims: 256
+          dims: 25
+          dims: 25
+          zero_data: true
+        }
+    },
+    {
+        key: "INPUT__4"
+        value: {
+          data_type: TYPE_INT64
+          dims: 2
+          zero_data: true
+        }
+    }
+  ]
+  batch_size: 1
+}

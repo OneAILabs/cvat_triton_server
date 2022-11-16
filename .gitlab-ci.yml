@@ -1,0 +1,74 @@
+stages:
+   - test
+   - build
+   - scan
+
+cvat_test:
+  stage: test
+  image:
+          name: 10.78.153.22:5000/cvat_triton_server_test:v1
+  artifacts:
+    paths:
+      - coverage
+      - test-results
+    expire_in: 1 hour
+  before_script:
+    - wget http://10.78.61.146:8080/yolo/yolov3.cfg -P tests
+    - wget http://10.78.61.146:8080/yolo/yolov3.weights -P tests
+    - wget http://10.78.61.146:8080/yolo/yolov4.cfg -P tests
+    - wget http://10.78.61.146:8080/yolo/yolov4.weights -P tests
+    - wget http://10.78.61.146:8080/yolo/labels.txt -P tests
+    - wget http://10.78.61.146:8080/yolo/dog.jpg -P tests
+    - wget -r -nd -np -P tests -A '*.pth' http://10.78.61.146:8080/siammask
+    - wget -r -nd -np -P tests -A '*.jpg' http://10.78.61.146:8080/siammask
+    - wget -r -nd -np -P tests -A '*.pth' http://10.78.61.146:8080/fbrs_interactive_segmentation
+    - wget -r -nd -np -P tests -A '*.jpg' http://10.78.61.146:8080/fbrs_interactive_segmentation
+    - wget http://10.78.61.146:8080/mask_rcnn/labels.txt -P tests
+    - wget http://10.78.61.146:8080/mask_rcnn/mask_rcnn_coco.h5 -P tests
+    - wget http://10.78.61.146:8080/mask_rcnn/mrcnn_test.jpg -P tests
+    - wget http://10.78.61.146:8080/reid/person-reidentification-retail-0300.bin -P tests
+    - wget http://10.78.61.146:8080/reid/person-reidentification-retail-0300.xml -P tests
+    - wget http://10.78.61.146:8080/reid/reid_test0.jpg -P tests
+    - wget http://10.78.61.146:8080/reid/reid_test1.jpg -P tests
+  script:
+    - bash test.sh -a -d $CI_PROJECT_DIR
+  allow_failure: true
+  tags:
+    - ks-output-server
+  when: manual
+
+wss-check:
+  stage: build
+  image:
+    name: 10.78.153.14:5000/gitlab-wss-py-3.8:v1.0
+    entrypoint: [""]
+  script:
+    - cp -r ${CI_PROJECT_DIR} /usr/src/workspace/ASUS_OSS/SourceCode
+    - cd /usr/src/workspace/ASUS_OSS
+    - ./scan_linux.sh ${CI_PROJECT_NAME}
+    - line=$(head -n 1 "./value.dat")
+    - if [[ "$line" -eq 254 ]]; then exit 1; else echo "normal_exit"; fi
+  allow_failure: true
+  tags:
+   - cloudinfra-tn-dev
+  when: manual
+
+
+sonarqube-check:
+  stage: scan
+  image: 
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script: 
+    - sonar-scanner
+  allow_failure: true
+  tags:
+   - cloudinfra-tn-dev
+  when: manual
